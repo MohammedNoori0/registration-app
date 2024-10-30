@@ -5,7 +5,7 @@ pipeline {
         maven 'Maven3'
     }
     environment {
-	    APP_NAME = "register-app-pipeline"
+	    APP_NAME = "registeration-app"
             RELEASE = "1.0.0"
             DOCKER_USER = "mohammednoori0"
             DOCKER_PASS = 'dockerhub'
@@ -73,5 +73,13 @@ pipeline {
             }
         }
     }
- }
+
+          stage("Trivy Scan"){
+           steps {
+	           script {
+                        sh("docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image mohammednoori0/register-app-pipeline:latest --no-progress --scanners vuln --exit-code 0 --severity HIGH,CRITICAL --format table --quiet")
+		        }
+	           }	
+           }
+    }
 }
