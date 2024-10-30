@@ -58,19 +58,20 @@ pipeline {
         }
 
         stage("Build & Push Docker Image") {
-            steps {
-                script {
-                    docker.withRegistry('',DOCKER_PASS) {
-                        docker_image = docker.build "${IMAGE_NAME}"
-                    }
-
-                    docker.withRegistry('',DOCKER_PASS) {
-                        docker_image.push("${IMAGE_TAG}")
-                        docker_image.push('latest')
-                    }
+        steps {
+            script {
+                docker.withRegistry('', DOCKER_PASS) {
+                    // Build the Docker image and tag it with IMAGE_NAME
+                    docker_image = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                    
+                    // Push the specific tag
+                    docker_image.push("${IMAGE_TAG}")
+                    
+                    // Retag the image as 'latest' and push
+                    docker_image.push('latest')
                 }
             }
-
-       }
+        }
     }
+ }
 }
